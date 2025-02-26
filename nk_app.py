@@ -1,6 +1,12 @@
 import streamlit as st
 import pandas as pd
 
+def load_data():
+    # Load the pre-existing dataset
+    file_path = "data_season.csv"  # Ensure this file is in the same directory or adjust the path accordingly
+    df = pd.read_csv(file_path)
+    return df
+
 def main():
     st.set_page_config(page_title="Namma Kisaan", layout="wide")
     
@@ -19,10 +25,14 @@ def main():
         st.sidebar.success(f"Registered {name} successfully! / {name} ಯಶಸ್ವಿಯಾಗಿ ನೋಂದಾಯಿಸಲಾಗಿದೆ!")
     
     # Load dataset
-    uploaded_file = st.file_uploader("Upload dataset (CSV) / ಡೇಟಾಸೆಟ್ ಅಪ್ಲೋಡ್ (CSV)", type=["csv"])
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.write("### 📊 Dataset Overview / ಡೇಟಾಸೆಟ್ ಅವಲೋಕನ")
+    df = load_data()
+    
+    if location:
+        filtered_df = df[df['Location'].str.contains(location, case=False, na=False)]
+        st.write("### 📊 Filtered Dataset for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಫಿಲ್ಟರ್ ಮಾಡಲಾದ ಡೇಟಾಸೆಟ್")
+        st.dataframe(filtered_df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
+    else:
+        st.write("### 📊 Full Dataset Overview / ಸಂಪೂರ್ಣ ಡೇಟಾಸೆಟ್ ಅವಲೋಕನ")
         st.dataframe(df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
     
 if __name__ == "__main__":
