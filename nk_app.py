@@ -28,7 +28,7 @@ def main():
         df = load_data()
         
         if location:
-            filtered_df = df[df['Location'].str.contains(location, case=False, na=False)]
+            filtered_df = df[df['Location'].str.contains(location, case=False, na=False)][['Soil type', 'yeilds', 'Irrigation', 'Season', 'Crops']]
             if not filtered_df.empty:
                 st.write("### 📊 Information for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಮಾಹಿತಿಗಳು")
                 st.dataframe(filtered_df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
