@@ -24,16 +24,18 @@ def main():
     if st.sidebar.button("Register / ನೋಂದಾಯಿಸಿ"):
         st.sidebar.success(f"Registered {name} successfully! / {name} ಯಶಸ್ವಿಯಾಗಿ ನೋಂದಾಯಿಸಲಾಗಿದೆ!")
     
-    # Load dataset
-    df = load_data()
-    
-    if location:
-        filtered_df = df[df['Location'].str.contains(location, case=False, na=False)]
-        st.write("### 📊 Filtered Dataset for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಫಿಲ್ಟರ್ ಮಾಡಲಾದ ಡೇಟಾಸೆಟ್")
-        st.dataframe(filtered_df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
-    else:
-        st.write("### 📊 Full Dataset Overview / ಸಂಪೂರ್ಣ ಡೇಟಾಸೆಟ್ ಅವಲೋಕನ")
-        st.dataframe(df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
+        # Load dataset
+        df = load_data()
+        
+        if location:
+            filtered_df = df[df['Location'].str.contains(location, case=False, na=False)]
+            if not filtered_df.empty:
+                st.write("### 📊 Information for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಮಾಹಿತಿಗಳು")
+                st.dataframe(filtered_df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
+            else:
+                st.write("❌ No data available for the given location / ನೀಡಿದ ಸ್ಥಳಕ್ಕಾಗಿ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ")
+        else:
+            st.write("⚠️ Please enter a location to view data / ಡೇಟಾ ವೀಕ್ಷಿಸಲು ಸ್ಥಳವನ್ನು ನಮೂದಿಸಿ")
     
 if __name__ == "__main__":
     main()
