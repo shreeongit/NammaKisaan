@@ -30,8 +30,13 @@ def main():
         if location:
             filtered_df = df[df['Location'].str.contains(location, case=False, na=False)][['Soil type', 'yeilds', 'Irrigation', 'Season', 'Crops']]
             if not filtered_df.empty:
+                selected_entry = filtered_df.iloc[0]  # Show only one matching entry
                 st.write("### 📊 Information for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಮಾಹಿತಿಗಳು")
-                st.dataframe(filtered_df.style.set_properties(**{"background-color": "#f9f9f9", "color": "black"}))
+                st.write(f"**Soil Type / ಮಣ್ಣು ಪ್ರಕಾರ:** {selected_entry['Soil type']}")
+                st.write(f"**Yield / ಉತ್ಪಾದನೆ:** {selected_entry['yeilds']}")
+                st.write(f"**Irrigation / ನೀರಾವರಿ:** {selected_entry['Irrigation']}")
+                st.write(f"**Season / ಹಂಗಾಮು:** {selected_entry['Season']}")
+                st.write(f"**Crop / ಬೆಳೆ:** {selected_entry['Crops']}")
             else:
                 st.write("❌ No data available for the given location / ನೀಡಿದ ಸ್ಥಳಕ್ಕಾಗಿ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ")
         else:
