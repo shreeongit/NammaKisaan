@@ -23,24 +23,37 @@ def main():
     
     if st.sidebar.button("Register / ನೋಂದಾಯಿಸಿ"):
         st.sidebar.success(f"Registered {name} successfully! / {name} ಯಶಸ್ವಿಯಾಗಿ ನೋಂದಾಯಿಸಲಾಗಿದೆ!")
-    
+        
         # Load dataset
         df = load_data()
         
         if location:
-            filtered_df = df[df['Location'].str.contains(location, case=False, na=False)][['Soil type', 'yeilds', 'Irrigation', 'Season', 'Crops']]
+            filtered_df = df[df['Location'].str.contains(location, case=False, na=False)][['Soil type', 'Yeilds', 'Irrigation', 'Season', 'Crops']]
             if not filtered_df.empty:
                 selected_entry = filtered_df.iloc[0]  # Select only one matching entry
                 st.write("### 📊 Information for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಮಾಹಿತಿಗಳು")
-                st.write(f"**Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ:** {selected_entry['Soil type']}")
-                st.write(f"**Yield / ಉತ್ಪನ್ನ:** {selected_entry['yeilds']}")
-                st.write(f"**Irrigation / ನೀರಾವರಿ:** {selected_entry['Irrigation']}")
-                st.write(f"**Season / ಋತು:** {selected_entry['Season']}")
-                st.write(f"**Crop / ಬೆಳೆ:** {selected_entry['Crops']}")
+                st.write(f"🟢 **Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ**: {selected_entry['Soil type']}")
+                st.write(f"🌾 **Yield / ಬೆಳೆ ಉತ್ಪಾದನೆ**: {selected_entry['Yeilds']}")
+                st.write(f"💧 **Irrigation / ನೀರಾವರಿ**: {selected_entry['Irrigation']}")
+                st.write(f"📅 **Season / ಋತು**: {selected_entry['Season']}")
+                st.write(f"🌱 **Crop / ಬೆಳೆ**: {selected_entry['Crops']}")
             else:
                 st.write("❌ No data available for the given location / ನೀಡಿದ ಸ್ಥಳಕ್ಕಾಗಿ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ")
         else:
             st.write("⚠️ Please enter a location to view data / ಡೇಟಾ ವೀಕ್ಷಿಸಲು ಸ್ಥಳವನ್ನು ನಮೂದಿಸಿ")
+        
+        # User input for soil type and irrigation method
+        st.write("### 🌿 Get Crop Recommendation / ಬೆಳೆ ಶಿಫಾರಸು ಪಡೆಯಿರಿ")
+        soil_type_input = st.selectbox("Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ", df['Soil type'].dropna().unique())
+        irrigation_input = st.selectbox("Select Irrigation Method / ನೀರಾವರಿ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ", df['Irrigation'].dropna().unique())
+        
+        recommendation_df = df[(df['Soil type'] == soil_type_input) & (df['Irrigation'] == irrigation_input)][['Season', 'Crops']]
+        if not recommendation_df.empty:
+            recommended_entry = recommendation_df.iloc[0]
+            st.write(f"🌾 **Recommended Season / ಶಿಫಾರಸು ಮಾಡಿದ ಋತು**: {recommended_entry['Season']}")
+            st.write(f"🌱 **Recommended Crop / ಶಿಫಾರಸು ಮಾಡಿದ ಬೆಳೆ**: {recommended_entry['Crops']}")
+        else:
+            st.write("❌ No recommendation available for the selected soil and irrigation / ಆಯ್ಕೆಮಾಡಿದ ಮಣ್ಣು ಮತ್ತು ನೀರಾವರಿಗಾಗಿ ಶಿಫಾರಸು ಲಭ್ಯವಿಲ್ಲ")
     
 if __name__ == "__main__":
     main()
