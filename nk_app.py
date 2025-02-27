@@ -1,29 +1,41 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 
 # Load the dataset
 data_path = "data_enkn.csv"  # Ensure this file is in your GitHub repo
 df = pd.read_csv(data_path)
 
+# Custom CSS for Styling
+st.markdown("""
+    <style>
+        body {background-color: #f4f4f4;}
+        .stApp {background-color: white; padding: 20px; border-radius: 10px;}
+        h1 {color: #2E8B57; text-align: center;}
+        .header {background-color: #2E8B57; padding: 10px; border-radius: 10px; color: white; text-align: center;}
+        .stButton>button {background-color: #2E8B57; color: white; font-size: 18px; border-radius: 8px; padding: 10px;}
+    </style>
+""", unsafe_allow_html=True)
+
 # Streamlit App Title
-st.title("Namma Kisaan - ನಮ್ಮ ಕೃಷಿಕ")
+st.markdown('<div class="header"><h1>Namma Kisaan - ನಮ್ಮ ಕೃಷಿಕ</h1></div>', unsafe_allow_html=True)
 
 # Layout for Registration & Crop Recommendation
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.header("👤 Farmer Registration - ರೈತರ ನೋಂದಣಿ")
-    name = st.text_input("Name / ಹೆಸರು")
-    age = st.number_input("Age / ವಯಸ್ಸು", min_value=18, max_value=100, step=1)
-    aadhaar = st.text_input("Aadhaar Number / ಆಧಾರ್ ಸಂಖ್ಯೆ")
-    ownership = st.radio("Ownership Type / ಮಾಲಿಕತ್ವ", ["Owner / ಮಾಲೀಕ", "Lessee / ಗುತ್ತಿಗೆದಾರ"])
-    location = st.text_input("Location / ಸ್ಥಳ")
-    plot_size = st.number_input("Plot Size (Acres) / ಜಮೀನು ಗಾತ್ರ (ಎಕರೆ)", min_value=0.1, step=0.1)
-
+    st.subheader("👤 Farmer Registration - ರೈತರ ನೋಂದಣಿ")
+    name = st.text_input("🧑 Name / ಹೆಸರು")
+    age = st.number_input("📅 Age / ವಯಸ್ಸು", min_value=18, max_value=100, step=1)
+    aadhaar = st.text_input("🔢 Aadhaar Number / ಆಧಾರ್ ಸಂಖ್ಯೆ")
+    ownership = st.radio("🏠 Ownership Type / ಮಾಲಿಕತ್ವ", ["Owner / ಮಾಲೀಕ", "Lessee / ಗುತ್ತಿಗೆದಾರ"], horizontal=True)
+    location = st.text_input("📍 Location / ಸ್ಥಳ")
+    plot_size = st.number_input("📏 Plot Size (Acres) / ಜಮೀನು ಗಾತ್ರ (ಎಕರೆ)", min_value=0.1, step=0.1)
+    
 with col2:
-    st.header("🌱 Crop & Season Suggestion - ಬೆಳೆ ಮತ್ತು ಋತು ಶಿಫಾರಸು")
-    soil_type = st.selectbox("Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ", df["Soil type"].dropna().unique())
-    irrigation = st.selectbox("Select Irrigation Type / ನೀರಾವರಿ ಪ್ರಕಾರ", df["Irrigation"].unique())
+    st.subheader("🌱 Crop & Season Suggestion - ಬೆಳೆ ಮತ್ತು ಋತು ಶಿಫಾರಸು")
+    soil_type = st.selectbox("🌍 Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ", df["Soil type"].dropna().unique())
+    irrigation = st.selectbox("💧 Select Irrigation Type / ನೀರಾವರಿ ಪ್ರಕಾರ", df["Irrigation"].unique())
     
     # Filter dataset based on user input
     filtered_df = df[(df["Soil type"] == soil_type) & (df["Irrigation"] == irrigation)]
@@ -31,6 +43,14 @@ with col2:
     if not filtered_df.empty:
         recommended_crop = filtered_df.iloc[0]["Crops"]
         recommended_season = filtered_df.iloc[0]["Season"]
-        st.success(f"✅ Recommended Crop: {recommended_crop}\n🌦️ Best Season: {recommended_season}")
+        st.success(f"✅ **Recommended Crop:** {recommended_crop}\n🌦️ **Best Season:** {recommended_season}")
     else:
-        st.warning("No matching data found. Try a different selection.")
+        st.warning("⚠️ No matching data found. Try a different selection.")
+
+# Footer
+st.markdown("""
+    <hr>
+    <div style='text-align: center;'>
+        <p style='color: gray;'>🚀 Built with ❤️ by Namma Kisaan Team</p>
+    </div>
+""", unsafe_allow_html=True)
