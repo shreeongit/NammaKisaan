@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load dataset
-data_path = "data_season.csv"  # Update path if necessary
+data_path = "data_enkn.csv"  # Update path if necessary
 df = pd.read_csv(data_path)
 
 # Bilingual labels
