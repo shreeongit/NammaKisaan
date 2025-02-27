@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 
 # Load the dataset
-data_path = "data_season.csv"  # Ensure this file is in your GitHub repo
+data_path = "data_enkn.csv"  # Ensure this file is in your GitHub repo
 df = pd.read_csv(data_path)
 
 # Custom CSS for Styling
