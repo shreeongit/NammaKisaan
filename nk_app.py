@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 
 # Load the dataset
-data_path = "data_enkn.csv"  # Ensure this file is in your GitHub repo
+data_path = "data_season.csv"  # Ensure this file is in your GitHub repo
 df = pd.read_csv(data_path)
 
 # Custom CSS for Styling
@@ -35,16 +35,24 @@ with col1:
     
 with col2:
     st.subheader("🌱 Crop & Season Suggestion - ಬೆಳೆ ಮತ್ತು ಋತು ಶಿಫಾರಸು")
-    soil_type = st.selectbox("🌍 Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ", df["Soil type"].dropna().unique())
-    irrigation = st.selectbox("💧 Select Irrigation Type / ನೀರಾವರಿ ಪ್ರಕಾರ", df["Irrigation"].unique())
+    soil_options = [f"{soil} / {soil}" for soil in df["Soil type"].dropna().unique()]
+    irrigation_options = [f"{irrigation} / {irrigation}" for irrigation in df["Irrigation"].unique()]
+    soil_type = st.selectbox("🌍 Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ", soil_options)
+    irrigation = st.selectbox("💧 Select Irrigation Type / ನೀರಾವರಿ ಪ್ರಕಾರ", irrigation_options)
+    
+    # Extracting only English part for filtering
+    soil_type_selected = soil_type.split(" / ")[0]
+    irrigation_selected = irrigation.split(" / ")[0]
     
     # Filter dataset based on user input
-    filtered_df = df[(df["Soil type"] == soil_type) & (df["Irrigation"] == irrigation)]
+    filtered_df = df[(df["Soil type"] == soil_type_selected) & (df["Irrigation"] == irrigation_selected)]
     
     if not filtered_df.empty:
         recommended_crop = filtered_df.iloc[0]["Crops"]
         recommended_season = filtered_df.iloc[0]["Season"]
-        st.success(f"✅ **Recommended Crop:** {recommended_crop}\n🌦️ **Best Season:** {recommended_season}")
+        temperature = filtered_df.iloc[0]["Temperature"]
+        rainfall = filtered_df.iloc[0]["Rainfall"]
+        st.success(f"✅ **Recommended Crop:** {recommended_crop}\n🌦️ **Best Season:** {recommended_season}\n🌡️ **Optimal Temperature:** {temperature}°C\n🌧️ **Required Rainfall:** {rainfall} mm")
     else:
         st.warning("⚠️ No matching data found. Try a different selection.")
 
