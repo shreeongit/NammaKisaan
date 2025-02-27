@@ -3,8 +3,8 @@ import pandas as pd
 
 def load_data():
     # Load the pre-existing dataset
-    file_path = "data_enkn.xlsx"  # Ensure this file is in the same directory or adjust the path accordingly
-    df = pd.read_excel(file_path)
+    file_path = "data_season.csv"  # Ensure this file is in the same directory or adjust the path accordingly
+    df = pd.read_csv(file_path)
     return df
 
 def main():
@@ -24,27 +24,23 @@ def main():
     if st.sidebar.button("Register / ನೋಂದಾಯಿಸಿ"):
         st.sidebar.success(f"Registered {name} successfully! / {name} ಯಶಸ್ವಿಯಾಗಿ ನೋಂದಾಯಿಸಲಾಗಿದೆ!")
     
-    # Load dataset
-    df = load_data()
-    
-    # User input for soil type and irrigation
-    st.write("### 🌱 Select Your Soil Type and Irrigation / ನಿಮ್ಮ ಮಣ್ಣು ಪ್ರಕಾರ ಮತ್ತು ನೀರಾವರಿ ಆಯ್ಕೆ ಮಾಡಿ")
-    soil_types = df['Soil type'].dropna().unique().tolist()
-    irrigation_types = df['Irrigation'].dropna().unique().tolist()
-    
-    selected_soil = st.selectbox("Soil Type / ಮಣ್ಣು ಪ್ರಕಾರ", soil_types)
-    selected_irrigation = st.selectbox("Irrigation Type / ನೀರಾವರಿ ಪ್ರಕಾರ", irrigation_types)
-    
-    if st.button("Get Crop Recommendation / ಬೆಳೆ ಶಿಫಾರಸು ಪಡೆಯಿರಿ"):
-        filtered_df = df[(df['Soil type'] == selected_soil) & (df['Irrigation'] == selected_irrigation)]
+        # Load dataset
+        df = load_data()
         
-        if not filtered_df.empty:
-            selected_entry = filtered_df.iloc[0]  # Pick the first matching entry
-            st.write("### 🌾 Recommended Crop and Season / ಶಿಫಾರಸು ಮಾಡಿದ ಬೆಳೆ ಮತ್ತು ಹಂಗಾಮು")
-            st.write(f"**Season / ಹಂಗಾಮು:** {selected_entry['Season']}")
-            st.write(f"**Crop / ಬೆಳೆ:** {selected_entry['Crops']}")
+        if location:
+            filtered_df = df[df['Location'].str.contains(location, case=False, na=False)][['Soil type', 'yeilds', 'Irrigation', 'Season', 'Crops']]
+            if not filtered_df.empty:
+                selected_entry = filtered_df.iloc[0]  # Select only one matching entry
+                st.write("### 📊 Information for Location / ಸ್ಥಳಕ್ಕಾಗಿ ಮಾಹಿತಿಗಳು")
+                st.write(f"**Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ:** {selected_entry['Soil type']}")
+                st.write(f"**Yield / ಉತ್ಪನ್ನ:** {selected_entry['yeilds']}")
+                st.write(f"**Irrigation / ನೀರಾವರಿ:** {selected_entry['Irrigation']}")
+                st.write(f"**Season / ಋತು:** {selected_entry['Season']}")
+                st.write(f"**Crop / ಬೆಳೆ:** {selected_entry['Crops']}")
+            else:
+                st.write("❌ No data available for the given location / ನೀಡಿದ ಸ್ಥಳಕ್ಕಾಗಿ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ")
         else:
-            st.write("❌ No matching data found. Please try different inputs. / ಯಾವುದೇ ಹೊಂದಾಣಿಕೆಯ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಬೇರೆ ಆಯ್ಕೆಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ.")
+            st.write("⚠️ Please enter a location to view data / ಡೇಟಾ ವೀಕ್ಷಿಸಲು ಸ್ಥಳವನ್ನು ನಮೂದಿಸಿ")
     
 if __name__ == "__main__":
     main()
