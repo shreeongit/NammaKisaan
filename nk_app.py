@@ -3,7 +3,7 @@ import pandas as pd
 
 def load_data():
     # Load the pre-existing dataset
-    file_path = "data_enkn.xlsx"  # Ensure this file is in the same directory or adjust the path accordingly
+    file_path = "data_enkn.csv"  # Ensure this file is in the same directory or adjust the path accordingly
     df = pd.read_csv(file_path)
     return df
 
