@@ -9,16 +9,17 @@ df = pd.read_csv(data_path)
 # Custom CSS for Styling
 st.markdown("""
     <style>
-        body {background-color: #f4f4f4;}
-        .stApp {background-color: white; padding: 20px; border-radius: 10px;}
-        h1 {color: #2E8B57; text-align: center;}
-        .header {background-color: #2E8B57; padding: 10px; border-radius: 10px; color: white; text-align: center;}
-        .stButton>button {background-color: #2E8B57; color: white; font-size: 18px; border-radius: 8px; padding: 10px;}
+        body {background-color: #121212; color: white;}
+        .stApp {background-color: #1E1E1E; padding: 20px; border-radius: 10px; color: white;}
+        h1 {color: #4CAF50; text-align: center;}
+        .header {background-color: #4CAF50; padding: 10px; border-radius: 10px; color: white; text-align: center;}
+        .stButton>button {background-color: #4CAF50; color: white; font-size: 18px; border-radius: 8px; padding: 10px;}
+        .stRadio>div {color: white;}
     </style>
 """, unsafe_allow_html=True)
 
 # Streamlit App Title
-st.markdown('<div class="header"><h1>Namma Kisaan - ನಮ್ಮ ಕೃಷಿಕ</h1></div>', unsafe_allow_html=True)
+st.markdown('<div class="header"><h1>ನಮ್ಮ ಕೃಷಿಕ - Namma Kisaan</h1></div>', unsafe_allow_html=True)
 
 # Layout for Registration & Crop Recommendation
 col1, col2 = st.columns([1, 1])
@@ -51,6 +52,6 @@ with col2:
 st.markdown("""
     <hr>
     <div style='text-align: center;'>
-        <p style='color: gray;'>🚀 Built with ❤️ by Namma Kisaan Team</p>
+        <p style='color: white;'>🚀 Built with ❤️ by Namma Kisaan Team</p>
     </div>
 """, unsafe_allow_html=True)
