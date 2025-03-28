@@ -1,14 +1,12 @@
 import streamlit as st
 import pandas as pd
-import folium
-from streamlit_folium import folium_static
-from some_satellite_api import get_satellite_image, classify_image, detect_water_bodies, assess_water_quality
+import streamlit.components.v1 as components
 
-# Load dataset
-data_path = "data_enkn.csv"
+# Load the dataset
+data_path = "data_enkn.csv"  # Ensure this file is in your GitHub repo
 df = pd.read_csv(data_path)
 
-# Custom CSS
+# Custom CSS for Styling
 st.markdown("""
     <style>
         body {background-color: #121212; color: white;}
@@ -23,7 +21,7 @@ st.markdown("""
 # Streamlit App Title
 st.markdown('<div class="header"><h1>ನಮ್ಮ ಕೃಷಿಕ - Namma Kisaan</h1></div>', unsafe_allow_html=True)
 
-# Layout
+# Layout for Registration & Crop Recommendation
 col1, col2 = st.columns([1, 1])
 
 with col1:
@@ -35,29 +33,12 @@ with col1:
     location = st.text_input("📍 Location / ಸ್ಥಳ")
     plot_size = st.number_input("📏 Plot Size (Acres) / ಜಮೀನು ಗಾತ್ರ (ಎಕರೆ)", min_value=0.1, step=0.1)
     
-    if location:
-        st.subheader("🛰️ Satellite Data Analysis")
-        sat_image = get_satellite_image(location)
-        water_bodies = detect_water_bodies(sat_image)
-        water_quality = assess_water_quality(water_bodies)
-        classification = classify_image(sat_image)
-        
-        st.image(sat_image, caption="Satellite Image", use_column_width=True)
-        st.write("🌊 Nearby Water Bodies:", water_bodies)
-        st.write("💧 Water Quality:", water_quality)
-        st.write("🏙️ Land Classification:", classification)
-        
-        # Show location on map
-        map_ = folium.Map(location=[lat, lon], zoom_start=12)
-        folium.Marker([lat, lon], popup="Selected Location").add_to(map_)
-        folium_static(map_)
-
 with col2:
     st.subheader("🌱 Crop & Season Suggestion - ಬೆಳೆ ಮತ್ತು ಋತು ಶಿಫಾರಸು")
     soil_type = st.selectbox("🌍 Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ", df["Soil type"].dropna().unique())
     irrigation = st.selectbox("💧 Select Irrigation Type / ನೀರಾವರಿ ಪ್ರಕಾರ", df["Irrigation"].unique())
     
-    # Filter dataset
+    # Filter dataset based on user input
     filtered_df = df[(df["Soil type"] == soil_type) & (df["Irrigation"] == irrigation)]
     
     if not filtered_df.empty:
