@@ -1,25 +1,24 @@
 import streamlit as st
 import pandas as pd
-import streamlit.components.v1 as components
+import folium
+from streamlit_folium import folium_static
+from geopy.geocoders import Nominatim
 
 # Load the dataset
-data_path = "data_enkn.csv"  # Ensure this file is in your GitHub repo
+data_path = "data_enkn.csv"  # Ensure this file is in your directory
 df = pd.read_csv(data_path)
 
-# Custom CSS for Styling
-st.markdown("""
-    <style>
-        body {background-color: #121212; color: white;}
-        .stApp {background-color: #1E1E1E; padding: 20px; border-radius: 10px; color: white;}
-        h1 {color: #4CAF50; text-align: center;}
-        .header {background-color: #4CAF50; padding: 10px; border-radius: 10px; color: white; text-align: center;}
-        .stButton>button {background-color: #4CAF50; color: white; font-size: 18px; border-radius: 8px; padding: 10px;}
-        .stRadio>div {color: white;}
-    </style>
-""", unsafe_allow_html=True)
+# Function to get coordinates
+def get_coordinates(location):
+    geolocator = Nominatim(user_agent="namma_kisaan")
+    try:
+        loc = geolocator.geocode(location)
+        return loc.latitude, loc.longitude if loc else (None, None)
+    except:
+        return None, None
 
 # Streamlit App Title
-st.markdown('<div class="header"><h1>ನಮ್ಮ ಕೃಷಿಕ - Namma Kisaan</h1></div>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align: center; color: #4CAF50;">ನಮ್ಮ ಕಿಸಾನ್ - Namma Kisaan</h1>', unsafe_allow_html=True)
 
 # Layout for Registration & Crop Recommendation
 col1, col2 = st.columns([1, 1])
@@ -32,7 +31,7 @@ with col1:
     ownership = st.radio("🏠 Ownership Type / ಮಾಲಿಕತ್ವ", ["Owner / ಮಾಲೀಕ", "Lessee / ಗುತ್ತಿಗೆದಾರ"], horizontal=True)
     location = st.text_input("📍 Location / ಸ್ಥಳ")
     plot_size = st.number_input("📏 Plot Size (Acres) / ಜಮೀನು ಗಾತ್ರ (ಎಕರೆ)", min_value=0.1, step=0.1)
-    
+
 with col2:
     st.subheader("🌱 Crop & Season Suggestion - ಬೆಳೆ ಮತ್ತು ಋತು ಶಿಫಾರಸು")
     soil_type = st.selectbox("🌍 Select Soil Type / ಮಣ್ಣಿನ ಪ್ರಕಾರ", df["Soil type"].dropna().unique())
@@ -49,6 +48,24 @@ with col2:
         st.success(f"✅ **Recommended Crop:** {recommended_crop}\n🌦️ **Best Season:** {recommended_season}\n🌡️ **Optimal Temperature:** {temperature}°C\n🌧️ **Required Rainfall:** {rainfall} mm")
     else:
         st.warning("⚠️ No matching data found. Try a different selection.")
+
+# Satellite View Feature
+st.subheader("📡 Satellite View of Your Location")
+user_location = st.text_input("📍 Enter a location (e.g., city, village, landmark)")
+
+if user_location:
+    lat, lon = get_coordinates(user_location)
+    if lat and lon:
+        st.success(f"Location found: {lat}, {lon}")
+        
+        # Create a map centered at the given coordinates
+        m = folium.Map(location=[lat, lon], zoom_start=15, tiles="Stamen Terrain")
+        folium.Marker([lat, lon], popup=user_location, tooltip="📍 Your Location").add_to(m)
+        
+        # Display the map
+        folium_static(m)
+    else:
+        st.error("Could not retrieve coordinates. Try a different location.")
 
 # Footer
 st.markdown("""
