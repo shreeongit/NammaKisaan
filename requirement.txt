@@ -1,4 +1,3 @@
 pandas
 pip install openpyxl
 streamlit
-folium
